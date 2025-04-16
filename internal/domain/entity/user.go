@@ -1,13 +1,9 @@
 package domain
 
 type User struct {
-	name      string
-	password  string
-	cpf       string
-	email     string
-	telephone string
-}
-
-type UserRepository interface {
-	FindByCpfPassword(cpf string, password string)
+	Name      string
+	Password  string
+	Cpf       string
+	Email     string
+	Telephone string
 }

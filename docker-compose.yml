@@ -13,7 +13,23 @@ services:
       POSTGRES_DB: food
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - food
+
+  migration:
+      image: flyway/flyway:9.0
+      command: -community -url=jdbc:postgresql://postgres-db:5432/food -schemas=public -user=admin -password=foood -connectRetries=60 migrate
+      volumes:
+          - ./db/migration:/flyway/sql
+      depends_on:
+          - postgres-db
+      networks:
+          - food
+
+networks: 
+  food:
 
 volumes:
   postgres-data:
     driver: local
+  

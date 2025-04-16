@@ -1,35 +1,53 @@
 package app
 
 import (
+	"FoodOrder/internal/controller"
 	"FoodOrder/internal/infra"
+	"FoodOrder/internal/infra/repository"
+	userCase "FoodOrder/internal/usecase/user"
+	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"go.uber.org/fx"
 )
 
-func NewEcho() *echo.Echo {
+func NewEcho(lc fx.Lifecycle) *echo.Echo {
 	e := echo.New()
 
-	e.GET("/", c)
+	lc.Append(fx.Hook{
+		OnStart: func(ctx context.Context) error {
+			go func() {
+				if err := e.Start(":8080"); err != nil && err != http.ErrServerClosed {
+					fmt.Printf("Erro ao iniciar o servidor: %v\n", err)
+				}
+			}()
+			return nil
+		},
+		OnStop: func(ctx context.Context) error {
+			return e.Shutdown(ctx)
+		},
+	},
+	)
 
 	return e
 }
 
-func StartServer(e *echo.Echo) {
-	e.Logger.Fatal(e.Start(":8080"))
+func RegistreRoutes(e *echo.Echo, u *controller.UserController) {
+	e.POST("/", u.Login)
 }
 
 func Run() {
 
-	infra.Connetc()
-
 	app := fx.New(
 		fx.Provide(NewEcho),
-		fx.Invoke(StartServer),
+		fx.Provide(controller.NewUserController),
+		fx.Provide(userCase.NewLoginUseCase),
+		fx.Provide(repository.NewUserRepository),
+		fx.Provide(infra.Connetc),
+		fx.Invoke(RegistreRoutes),
 	)
 
-	if err := app.Start(nil); err != nil {
-		fmt.Println("Erro ao iniciar o app:", err)
-	}
+	app.Run()
 }
