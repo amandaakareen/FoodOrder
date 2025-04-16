@@ -22,7 +22,7 @@ jobs:
         run: go mod download
 
       - name: Build da aplicação
-        run: go build -v -o app
+        run: go build -v -o app cmd/main.go 
 
       - name: Verificar binário
         run: ls -lh ./app
