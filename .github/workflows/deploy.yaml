@@ -36,6 +36,15 @@ jobs:
       - name: Publicar imagem
         run: docker push ${{ secrets.DOCKER_USERNAME }}/food:latest
 
-        
-      
+      - name: Deploy na EC2 
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: 18.233.152.23           
+          username: ubuntu          
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/food:latest
+          docker stop food || true && docker rm food || true
+          docker run -d --name food -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/food:latest
+
       
