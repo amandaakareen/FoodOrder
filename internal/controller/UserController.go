@@ -21,25 +21,25 @@ func NewUserController(login userCase.LoginUseCaseIntercafe) *UserController {
 }
 
 func (u *UserController) Login(c echo.Context) error {
-	input := LoginInput{}
+	// input := LoginInput{}
 
-	if err := c.Bind(&input); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{
-			"erro": "Erro ao ler o corpo da requisição: " + err.Error(),
-		})
-	}
+	// if err := c.Bind(&input); err != nil {
+	// 	return c.JSON(http.StatusBadRequest, map[string]string{
+	// 		"erro": "Erro ao ler o corpo da requisição: " + err.Error(),
+	// 	})
+	// }
 
-	token, err := u.userLogin.Login(input.Email, input.Senha)
+	// token, err := u.userLogin.Login(input.Email, input.Senha)
 
-	if err == nil {
-		return c.JSON(http.StatusOK, map[string]string{
-			"mensagem": "Login OK",
-			"email":    input.Email,
-			"token":    token,
-		})
-	}
+	// if err == nil {
+	// 	return c.JSON(http.StatusOK, map[string]string{
+	// 		"mensagem": "Login OK",
+	// 		"email":    input.Email,
+	// 		"token":    token,
+	// 	})
+	// }
 
-	return c.JSON(http.StatusUnauthorized, map[string]string{
+	return c.JSON(http.StatusOK, map[string]string{
 		"mensagem": "Não autenticado",
 	})
 

@@ -35,7 +35,7 @@ func NewEcho(lc fx.Lifecycle) *echo.Echo {
 }
 
 func RegistreRoutes(e *echo.Echo, u *controller.UserController) {
-	e.POST("/", u.Login)
+	e.GET("/", u.Login)
 }
 
 func Run() {
