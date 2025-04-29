@@ -45,6 +45,13 @@ jobs:
           script: |
             docker pull ${{ secrets.DOCKER_USERNAME }}/food:latest
             docker stop food || true && docker rm food || true
-            docker run -d --name food -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/food:latest
+            docker run -d --name food -p 80:8080 \
+              -e DB_HOST=${{ secrets.DB_HOST }} \
+              -e DB_PORT=${{ secrets.DB_PORT }} \
+              -e DB_USER=${{ secrets.DB_USER }} \
+              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              -e DB_NAME=${{ secrets.DB_NAME }} \
+              ${{ secrets.DOCKER_USERNAME }}/food:latest
+
 
       
