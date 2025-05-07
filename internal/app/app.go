@@ -1,6 +1,7 @@
 package app
 
 import (
+	"FoodOrder/internal/auth"
 	"FoodOrder/internal/controller"
 	"FoodOrder/internal/infra"
 	"FoodOrder/internal/infra/repository"
@@ -35,13 +36,16 @@ func NewEcho(lc fx.Lifecycle) *echo.Echo {
 }
 
 func RegistreRoutes(e *echo.Echo, u *controller.UserController) {
-	e.GET("/", u.Login)
+	e.POST("/login", u.Login)
+	e.POST("/cadastro", u.Login)
 }
 
 func Run() {
 
 	app := fx.New(
 		fx.Provide(NewEcho),
+		fx.Provide(auth.ProvideJWTSecret),
+		fx.Provide(auth.NewAuthService),
 		fx.Provide(controller.NewUserController),
 		fx.Provide(userCase.NewLoginUseCase),
 		fx.Provide(repository.NewUserRepository),
